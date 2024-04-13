@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montaga:wght@400&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,14 +20,15 @@
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  @apply leading-[normal] m-0;
 }
+
+*,
+::before,
+::after {
+  border-width: 0;
+}
+
 
 @layer utilities {
   .text-balance {
