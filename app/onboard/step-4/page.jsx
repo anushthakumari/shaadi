@@ -1,10 +1,20 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFormState, useFormStatus } from "react-dom";
+
 import Button from "@/components/button";
 import LabelInput from "@/components/controls/LabelInput";
+import { saveStep4 } from "@/app/lib/actions";
 
-const Step4 = ({ onFormSubmit }) => {
+const initialState = {
+	message: "",
+};
+
+const Step4 = () => {
+	const [state, formAction] = useFormState(saveStep4, initialState);
+	const router = useRouter();
 	// Initialize state for form inputs
 	const [formData, setFormData] = useState({});
 
@@ -16,10 +26,10 @@ const Step4 = ({ onFormSubmit }) => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		onFormSubmit(formData);
-	};
+	if (state.redirect) {
+		alert("Saved successfully!");
+		router.push(state.redirect.destination);
+	}
 
 	return (
 		<div>
@@ -28,45 +38,57 @@ const Step4 = ({ onFormSubmit }) => {
 			</h2>
 			<form
 				className="mt-8 self-stretch flex flex-col items-start justify-start gap-[16px] max-w-full"
-				onSubmit={handleSubmit}>
+				action={formAction}>
 				<LabelInput
 					type="text"
-					name="mother_details"
-					value={formData.mother_details}
+					name="mother_occupation"
+					value={formData.mother_occupation}
 					onChange={handleInputChange}
-					placeholder="Mother's details"
-					label="Mother's details"
+					placeholder="Mother's occupation"
+					label="Mother's occupation"
 				/>
 				<LabelInput
 					type="text"
-					name="father_details"
-					value={formData.father_details}
+					name="father_occupation"
+					value={formData.father_occupation}
 					onChange={handleInputChange}
-					placeholder="Father's details"
-					label="Father's details"
+					placeholder="Father's occupation"
+					label="Father's occupation"
 				/>
 				<LabelInput
 					type="number"
-					name="n_sisters"
-					value={formData.n_sister}
+					name="num_sisters"
+					value={formData.num_sisters}
 					onChange={handleInputChange}
 					placeholder="No Of Sisters"
 					label="No Of Sisters"
 				/>
 				<LabelInput
 					type="number"
-					name="n_brothers"
-					value={formData.n_sister}
+					name="num_brothers"
+					value={formData.num_brothers}
 					onChange={handleInputChange}
 					placeholder="No of brothers"
 					label="No of brothers"
 				/>
 
 				{/* Next button */}
-				<Button text="Next" type="submit" />
+				<NextButton />
 			</form>
 		</div>
 	);
 };
+
+function NextButton() {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			text={pending ? "Loading..." : "Next"}
+			disabled={pending}
+			type="submit"
+			className="w-full bg-crimson-100 text-white rounded-md"
+		/>
+	);
+}
 
 export default Step4;

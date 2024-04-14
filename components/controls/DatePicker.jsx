@@ -5,24 +5,32 @@ import LabelInput from "@/components/controls/LabelInput";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-const DatePickerInput = forwardRef(
-	(
-		{ value, onClick, placeholder, label, labelProps, containerProps, ...rest },
-		ref
-	) => {
-		return (
-			<LabelInput
-				placeholder={placeholder}
-				label={label}
-				labelProps={labelProps}
-				containerProps={containerProps}
-				value={value}
-				onClick={onClick}
-				ref={ref}
-			/>
-		);
-	}
-);
+const DatePickerInput = forwardRef((props, ref) => {
+	const {
+		value,
+		onClick,
+		placeholder,
+		label,
+		labelProps,
+		name,
+		containerProps,
+		...rest
+	} = props;
+
+	return (
+		<LabelInput
+			name={name}
+			placeholder={placeholder}
+			label={label}
+			labelProps={labelProps}
+			containerProps={containerProps}
+			value={value}
+			onClick={onClick}
+			ref={ref}
+			{...rest}
+		/>
+	);
+});
 
 DatePickerInput.displayName = "DatePickerInput";
 
@@ -38,15 +46,14 @@ const DatePicker = ({
 	return (
 		<ReactDatePicker
 			wrapperClassName="w-full"
-			dateFormat={"dd/MM/YYYY"}
+			name={name}
 			customInput={
 				<DatePickerInput
-					name={name}
 					placeholder={placeholder}
 					label={label}
-					inputProps={inputProps}
 					labelProps={labelProps}
 					containerProps={containerProps}
+					{...inputProps}
 				/>
 			}
 			{...rest}

@@ -1,14 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFormState, useFormStatus } from "react-dom";
+
 import Button from "@/components/button";
 import Avatar from "@/components/Avatar";
 import LabelSelect from "@/components/controls/LabelSelect";
-
 import DatePicker from "@/components/controls/DatePicker";
-import validData from "@/constants/validData";
 
-const Step2 = ({ onFormSubmit }) => {
+import validData from "@/constants/validData";
+import { saveStep1 } from "@/app/lib/actions";
+
+const initialState = {
+	message: "",
+};
+
+const Step1 = () => {
+	const [state, formAction] = useFormState(saveStep1, initialState);
+	const router = useRouter();
+
 	// Initialize state for form inputs
 	const [formData, setFormData] = useState({
 		age: "",
@@ -33,10 +44,10 @@ const Step2 = ({ onFormSubmit }) => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		onFormSubmit(formData);
-	};
+	if (state.redirect) {
+		alert("Saved successfully!");
+		router.push(state.redirect.destination);
+	}
 
 	return (
 		<div>
@@ -45,7 +56,7 @@ const Step2 = ({ onFormSubmit }) => {
 			</h2>
 			<form
 				className="m-0 self-stretch flex flex-col items-start justify-start gap-[16px] max-w-full"
-				onSubmit={handleSubmit}>
+				action={formAction}>
 				<div className="w-[100%] mt-2 flex flex-col gap-2 items-center justify-center">
 					<p className="text-xl">Upload Your Photo</p>
 					<label htmlFor="avatar-upload">
@@ -73,7 +84,7 @@ const Step2 = ({ onFormSubmit }) => {
 					<DatePicker
 						selected={formData.dob}
 						wrapperClassName="w-full"
-						dateFormat={"dd/MM/YYYY"}
+						dateFormat={"YYYY-MM-dd"}
 						maxDate={new Date("2000-04-01")}
 						showYearDropdown
 						scrollableYearDropdown
@@ -81,6 +92,7 @@ const Step2 = ({ onFormSubmit }) => {
 						openToDate={new Date("1990-04-01")}
 						label={"Enter Date Of Birth"}
 						placeholder={"Enter Date Of Birth"}
+						name="dob"
 						onChange={(date) =>
 							handleInputChange({
 								target: {
@@ -114,10 +126,22 @@ const Step2 = ({ onFormSubmit }) => {
 				</div>
 
 				{/* Next button */}
-				<Button text="Next" type="submit" />
+				<NextButton />
 			</form>
 		</div>
 	);
 };
 
-export default Step2;
+function NextButton() {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			text={pending ? "Loading..." : "Next"}
+			disabled={pending}
+			type="submit"
+			className="w-full bg-crimson-100 text-white rounded-md"
+		/>
+	);
+}
+
+export default Step1;

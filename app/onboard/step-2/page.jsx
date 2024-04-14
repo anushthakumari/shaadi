@@ -1,13 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFormState, useFormStatus } from "react-dom";
+
 import Button from "@/components/button";
 import LabelInput from "@/components/controls/LabelInput";
 import LabelSelect from "@/components/controls/LabelSelect";
 
 import validData from "@/constants/validData";
+import { saveStep2 } from "@/app/lib/actions";
 
-const Step2 = ({ onFormSubmit }) => {
+const initialState = {
+	message: "",
+};
+
+const Step2 = () => {
+	const [state, formAction] = useFormState(saveStep2, initialState);
+	const router = useRouter();
+
 	// Initialize state for form inputs
 	const [formData, setFormData] = useState({});
 
@@ -19,10 +30,10 @@ const Step2 = ({ onFormSubmit }) => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		onFormSubmit(formData);
-	};
+	if (state.redirect) {
+		alert("Saved successfully!");
+		router.push(state.redirect.destination);
+	}
 
 	return (
 		<div>
@@ -31,7 +42,7 @@ const Step2 = ({ onFormSubmit }) => {
 			</h2>
 			<form
 				className="mt-8 self-stretch flex flex-col items-start justify-start gap-[16px] max-w-full"
-				onSubmit={handleSubmit}>
+				action={formAction}>
 				<LabelInput
 					type="text"
 					name="city"
@@ -66,10 +77,22 @@ const Step2 = ({ onFormSubmit }) => {
 				/>
 
 				{/* Next button */}
-				<Button text="Next" type="submit" />
+				<NextButton />
 			</form>
 		</div>
 	);
 };
+
+function NextButton() {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			text={pending ? "Loading..." : "Next"}
+			disabled={pending}
+			type="submit"
+			className="w-full bg-crimson-100 text-white rounded-md"
+		/>
+	);
+}
 
 export default Step2;

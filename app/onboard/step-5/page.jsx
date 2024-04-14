@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFormState, useFormStatus } from "react-dom";
+
 import Button from "@/components/button";
 import LabelSelect from "@/components/controls/LabelSelect";
+import { saveStep5 } from "@/app/lib/actions";
 
 import validData from "@/constants/validData";
 
@@ -11,7 +15,14 @@ const ageOptions = validData.AGES.map((v) => ({
 	value: v,
 }));
 
-const Step5 = ({ onFormSubmit }) => {
+const initialState = {
+	message: "",
+};
+
+const Step5 = () => {
+	const [state, formAction] = useFormState(saveStep5, initialState);
+	const router = useRouter();
+
 	// Initialize state for form inputs
 	const [formData, setFormData] = useState({});
 
@@ -23,10 +34,10 @@ const Step5 = ({ onFormSubmit }) => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		onFormSubmit(formData);
-	};
+	if (state.redirect) {
+		alert("Saved successfully!");
+		router.push(state.redirect.destination);
+	}
 
 	return (
 		<div>
@@ -35,7 +46,7 @@ const Step5 = ({ onFormSubmit }) => {
 			</h2>
 			<form
 				className="mt-8 self-stretch flex flex-col items-start justify-start gap-[16px] max-w-full"
-				onSubmit={handleSubmit}>
+				action={formAction}>
 				<div className="w-full flex flex-row gap-2 items-center justiy-between">
 					<div className="flex-1">
 						<LabelSelect
@@ -45,6 +56,7 @@ const Step5 = ({ onFormSubmit }) => {
 							value={formData.from_age}
 							options={ageOptions}
 							onChange={handleInputChange}
+							required
 						/>
 					</div>
 					<div className="flex-1">
@@ -55,6 +67,7 @@ const Step5 = ({ onFormSubmit }) => {
 							value={formData.to_age}
 							options={ageOptions}
 							onChange={handleInputChange}
+							required
 						/>
 					</div>
 				</div>
@@ -67,6 +80,7 @@ const Step5 = ({ onFormSubmit }) => {
 							value={formData.from_height}
 							options={validData.HEIGHTS}
 							onChange={handleInputChange}
+							required
 						/>
 					</div>
 					<div className="flex-1">
@@ -77,6 +91,7 @@ const Step5 = ({ onFormSubmit }) => {
 							value={formData.to_height}
 							options={validData.HEIGHTS}
 							onChange={handleInputChange}
+							required
 						/>
 					</div>
 				</div>
@@ -87,6 +102,7 @@ const Step5 = ({ onFormSubmit }) => {
 					value={formData.religion}
 					options={validData.RELIGIONS}
 					onChange={handleInputChange}
+					required
 				/>
 				<LabelSelect
 					name="sub_community"
@@ -95,6 +111,7 @@ const Step5 = ({ onFormSubmit }) => {
 					options={validData.MOTHER_TONGUES}
 					placeholder="Sub-community"
 					label="Sub-community"
+					required
 				/>
 				<LabelSelect
 					name="mother_tongue"
@@ -103,13 +120,26 @@ const Step5 = ({ onFormSubmit }) => {
 					onChange={handleInputChange}
 					placeholder="Mother tongue"
 					label="Mother tongue"
+					required
 				/>
 
 				{/* Next button */}
-				<Button text="Next" type="submit" />
+				<NextButton />
 			</form>
 		</div>
 	);
 };
+
+function NextButton() {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			text={pending ? "Loading..." : "Finish"}
+			disabled={pending}
+			type="submit"
+			className="w-full bg-crimson-100 text-white rounded-md"
+		/>
+	);
+}
 
 export default Step5;

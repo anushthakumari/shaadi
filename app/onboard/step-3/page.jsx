@@ -1,10 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useFormState, useFormStatus } from "react-dom";
+
 import Button from "@/components/button";
 import LabelInput from "@/components/controls/LabelInput";
+import { saveStep3 } from "@/app/lib/actions";
 
-const Step3 = ({ onFormSubmit }) => {
+const initialState = {
+	message: "",
+};
+
+const Step3 = () => {
+	const [state, formAction] = useFormState(saveStep3, initialState);
+	const router = useRouter();
+
 	// Initialize state for form inputs
 	const [formData, setFormData] = useState({});
 
@@ -16,10 +27,10 @@ const Step3 = ({ onFormSubmit }) => {
 		}));
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		onFormSubmit(formData);
-	};
+	if (state.redirect) {
+		alert("Saved successfully!");
+		router.push(state.redirect.destination);
+	}
 
 	return (
 		<div>
@@ -28,27 +39,27 @@ const Step3 = ({ onFormSubmit }) => {
 			</h2>
 			<form
 				className="mt-8 self-stretch flex flex-col items-start justify-start gap-[16px] max-w-full"
-				onSubmit={handleSubmit}>
+				action={formAction}>
 				<LabelInput
 					type="text"
-					name="qualificatio"
-					value={formData.qualificatio}
+					name="highest_qualification"
+					value={formData.highest_qualification}
 					onChange={handleInputChange}
 					placeholder="Highest qualification"
 					label="Highest qualification"
 				/>
 				<LabelInput
 					type="text"
-					name="org"
-					value={formData.org}
+					name="organization"
+					value={formData.organization}
 					onChange={handleInputChange}
 					placeholder="Organization you are working at"
 					label="Organization you are working at"
 				/>
 				<LabelInput
 					type="text"
-					name="job_role"
-					value={formData.job_role}
+					name="job_title"
+					value={formData.job_title}
 					onChange={handleInputChange}
 					placeholder="You are working as a"
 					label="You are working as a"
@@ -63,10 +74,22 @@ const Step3 = ({ onFormSubmit }) => {
 				/>
 
 				{/* Next button */}
-				<Button text="Next" type="submit" />
+				<NextButton />
 			</form>
 		</div>
 	);
 };
+
+function NextButton() {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			text={pending ? "Loading..." : "Next"}
+			disabled={pending}
+			type="submit"
+			className="w-full bg-crimson-100 text-white rounded-md"
+		/>
+	);
+}
 
 export default Step3;
