@@ -122,6 +122,7 @@ const Step1 = () => {
 							{ value: "2", label: "Female" },
 						]}
 						onChange={handleInputChange}
+						required
 					/>
 				</div>
 

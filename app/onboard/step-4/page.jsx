@@ -46,6 +46,7 @@ const Step4 = () => {
 					onChange={handleInputChange}
 					placeholder="Mother's occupation"
 					label="Mother's occupation"
+					required
 				/>
 				<LabelInput
 					type="text"
@@ -54,6 +55,7 @@ const Step4 = () => {
 					onChange={handleInputChange}
 					placeholder="Father's occupation"
 					label="Father's occupation"
+					required
 				/>
 				<LabelInput
 					type="number"
@@ -62,6 +64,7 @@ const Step4 = () => {
 					onChange={handleInputChange}
 					placeholder="No Of Sisters"
 					label="No Of Sisters"
+					required
 				/>
 				<LabelInput
 					type="number"
@@ -70,6 +73,7 @@ const Step4 = () => {
 					onChange={handleInputChange}
 					placeholder="No of brothers"
 					label="No of brothers"
+					required
 				/>
 
 				{/* Next button */}

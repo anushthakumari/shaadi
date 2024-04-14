@@ -50,6 +50,7 @@ const Step2 = () => {
 					onChange={handleInputChange}
 					placeholder="City you live in"
 					label="City you live in"
+					required
 				/>
 				<LabelSelect
 					id="religion-selection"
@@ -58,6 +59,7 @@ const Step2 = () => {
 					value={formData.religion}
 					options={validData.RELIGIONS}
 					onChange={handleInputChange}
+					required
 				/>
 				<LabelSelect
 					name="sub_community"
@@ -66,6 +68,7 @@ const Step2 = () => {
 					options={validData.MOTHER_TONGUES}
 					placeholder="Sub-community"
 					label="Sub-community"
+					required
 				/>
 				<LabelSelect
 					name="mother_tongue"
@@ -74,6 +77,7 @@ const Step2 = () => {
 					onChange={handleInputChange}
 					placeholder="Mother tongue"
 					label="Mother tongue"
+					required
 				/>
 
 				{/* Next button */}

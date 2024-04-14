@@ -1,11 +1,30 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
 import Button from "@/components/button";
 import Card from "@/components/card";
 
 import { auth } from "@/auth";
+import { getProfileStatus } from "@/app/lib/actions";
+
+const NUMBER_STEP_ROUTES = [
+	"/",
+	"/onboard/step-1",
+	"/onboard/step-2",
+	"/onboard/step-3",
+	"/onboard/step-4",
+	"/onboard/step-5",
+];
 
 const HomePage = async (data) => {
 	const authData = await auth();
+
+	const statusObj = await getProfileStatus();
+
+	if (!statusObj.isCompleted) {
+		return redirect(NUMBER_STEP_ROUTES[statusObj.next_step]);
+	}
+
 	return (
 		<div className="w-full relative bg-white overflow-hidden flex flex-col items-end justify-start pt-[75px] px-0 pb-0 box-border gap-[126px] leading-[normal] tracking-[normal] mq800:gap-[63px] mq450:gap-[31px]">
 			<img

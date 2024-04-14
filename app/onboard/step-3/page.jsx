@@ -47,6 +47,7 @@ const Step3 = () => {
 					onChange={handleInputChange}
 					placeholder="Highest qualification"
 					label="Highest qualification"
+					required
 				/>
 				<LabelInput
 					type="text"
@@ -55,6 +56,7 @@ const Step3 = () => {
 					onChange={handleInputChange}
 					placeholder="Organization you are working at"
 					label="Organization you are working at"
+					required
 				/>
 				<LabelInput
 					type="text"
@@ -63,6 +65,7 @@ const Step3 = () => {
 					onChange={handleInputChange}
 					placeholder="You are working as a"
 					label="You are working as a"
+					required
 				/>
 				<LabelInput
 					type="number"
@@ -71,6 +74,7 @@ const Step3 = () => {
 					onChange={handleInputChange}
 					placeholder="Monthly income"
 					label="Monthly income"
+					required
 				/>
 
 				{/* Next button */}

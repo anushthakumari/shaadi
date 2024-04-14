@@ -22,6 +22,26 @@ async function getUser({ email = "", phone = "" }) {
 	return rows[0];
 }
 
+export async function getProfileStatus() {
+	const authState = await auth();
+
+	const user_id = authState?.user?.id;
+
+	const { rows, rowCount } = await db.query(
+		`SELECT * FROM public.user_steps WHERE user_id=$1`,
+		[user_id]
+	);
+
+	if (!rowCount) {
+		return { isCompleted: true };
+	}
+
+	return {
+		isCompleted: rows[0].step_complete,
+		next_step: rows[0].step_number,
+	};
+}
+
 export async function authenticate(prevState, formData) {
 	try {
 		await signIn("credentials", formData);

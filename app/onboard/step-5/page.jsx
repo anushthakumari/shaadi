@@ -36,7 +36,7 @@ const Step5 = () => {
 
 	if (state.redirect) {
 		alert("Saved successfully!");
-		router.push(state.redirect.destination);
+		window.location.href = "/";
 	}
 
 	return (
