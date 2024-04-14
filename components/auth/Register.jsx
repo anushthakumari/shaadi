@@ -1,78 +1,92 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useFormState, useFormStatus } from "react-dom";
+
 import LabelInput from "@/components/controls/LabelInput";
 import Button from "@/components/button";
+import Message from "@/components/Message";
+import FieldError from "@/components/FieldError";
+
+import { register } from "@/app/lib/actions";
+
+const initialState = {
+	message: "",
+};
 
 const Register = () => {
-	// State to manage form data
-	const [formData, setFormData] = useState({
-		name: "",
-		email: "",
-		phone: "",
-		password: "",
-	});
+	const [state, formAction] = useFormState(register, initialState);
+	const router = useRouter();
 
-	// Function to handle form submission
-	const handleSubmit = (event) => {
-		event.preventDefault(); // Prevent default form submission behavior
-
-		// Handle form data submission logic here
-		console.log("Form data submitted:", formData);
-		// Add your submission logic here (e.g., API call)
-	};
-
-	// Function to handle input changes
-	const handleInputChange = (event) => {
-		const { name, value } = event.target;
-		setFormData((prevData) => ({
-			...prevData,
-			[name]: value,
-		}));
-	};
+	if (state.redirect) {
+		router.push(state.redirect.destination);
+	}
 
 	return (
 		<form
-			onSubmit={handleSubmit}
-			className="m-0 self-stretch flex flex-col items-start justify-start gap-[32px] max-w-full mq750:gap-[16px]" // Updated class for consistent font size, color, and alignment
-		>
-			<LabelInput
-				label="Enter the Name"
-				placeholder="Enter your name"
-				name="name"
-				type="text"
-				value={formData.name}
-				onChange={handleInputChange}
-			/>
-			<LabelInput
-				label="Enter the Email"
-				placeholder="Enter your name"
-				name="email"
-				type="email"
-				value={formData.name}
-				onChange={handleInputChange}
-			/>
-			<LabelInput
-				label="Enter the Phone No"
-				placeholder="Enter your phone no."
-				name="phone"
-				type="text"
-				value={formData.phone}
-				onChange={handleInputChange}
-			/>
-			<LabelInput
-				label="Enter the Password"
-				placeholder="Enter your password"
-				name="password"
-				type="password"
-				value={formData.password}
-				onChange={handleInputChange}
-			/>
+			action={formAction}
+			className="flex flex-col gap-[32px] max-w-full mq750:gap-[16px]">
+			{state?.message ? (
+				<Message severity={"error"}>{state.message}</Message>
+			) : null}
+			<div>
+				<LabelInput
+					label="Enter the Name"
+					placeholder="Enter your name"
+					name="name"
+					type="text"
+					required
+				/>
+				<FieldError errors={state.errors?.name} />
+			</div>
+			<div>
+				<LabelInput
+					label="Enter the Email"
+					placeholder="Enter your name"
+					name="email"
+					type="email"
+					required
+				/>
+				<FieldError errors={state.errors?.email} />
+			</div>
+			<div>
+				<LabelInput
+					label="Enter the Phone No"
+					placeholder="Enter your phone no."
+					name="phone"
+					type="number"
+					maxLength="10"
+					required
+				/>
+				<FieldError errors={state.errors?.phone} />
+			</div>
+
+			<div>
+				<LabelInput
+					label="Enter the Password"
+					placeholder="Enter your password"
+					name="password"
+					type="password"
+					required
+				/>
+				<FieldError errors={state.errors?.password} />
+			</div>
+
+			<div>
+				<LabelInput
+					label="Confirm Password"
+					placeholder="Confirm Password"
+					name="cpassword"
+					type="password"
+					required
+				/>
+				<FieldError errors={state.errors?.cpassword} />
+			</div>
 
 			{/* Register button */}
 			<div className="w-full">
-				<Button text="Register" type="submit" />
+				<RegisterButton />
 			</div>
 
 			{/* Login link */}
@@ -87,5 +101,17 @@ const Register = () => {
 		</form>
 	);
 };
+
+function RegisterButton() {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			text={pending ? "Loading..." : "Register"}
+			disabled={pending}
+			type="submit"
+			className="w-full bg-crimson-100 text-white rounded-md"
+		/>
+	);
+}
 
 export default Register;

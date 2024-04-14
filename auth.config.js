@@ -10,7 +10,6 @@ export const authConfig = {
 		authorized({ auth, request: { nextUrl } }) {
 			const isLoggedIn = !!auth?.user;
 			const isAuthPage = authRoutes.includes(nextUrl.pathname);
-			console.log({ isAuthPage, isLoggedIn });
 
 			if (isAuthPage && isLoggedIn) {
 				return Response.redirect(new URL("/", nextUrl));

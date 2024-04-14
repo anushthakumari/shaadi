@@ -2,7 +2,10 @@ import Link from "next/link";
 import Button from "@/components/button";
 import Card from "@/components/card";
 
-const HomePage = () => {
+import { auth } from "@/auth";
+
+const HomePage = async (data) => {
+	const authData = await auth();
 	return (
 		<div className="w-full relative bg-white overflow-hidden flex flex-col items-end justify-start pt-[75px] px-0 pb-0 box-border gap-[126px] leading-[normal] tracking-[normal] mq800:gap-[63px] mq450:gap-[31px]">
 			<img
@@ -16,10 +19,10 @@ const HomePage = () => {
 						FYP
 					</h3>
 					<div className="w-[69px] flex flex-col items-start justify-end pt-0 px-0 pb-[9.5px] box-border text-center text-5xl font-montserrat">
-						<Link href="/login-page">
+						<Link href={authData?.user ? "/profile" : "/Login"}>
 							<div className="self-stretch flex flex-col items-start justify-start gap-[7px]">
 								<div className="cursor-pointer self-stretch relative font-medium inline-block min-w-[69px] z-[1] mq450:text-lgi">
-									Login
+									{authData?.user?.name ? authData?.user?.name : "Login"}
 								</div>
 								<div className="w-[70.5px] h-[1.5px] relative box-border z-[1] border-t-[1.5px] border-solid border-white" />
 							</div>
