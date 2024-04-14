@@ -5,7 +5,7 @@ import { isProd } from "@/utils/helpers";
 const { Pool } = pg;
 
 const pool = new Pool({
-	ssl: isProd() ? "no-veriy" : undefined,
+	ssl: isProd() ? "no-verify" : undefined,
 });
 
 export default pool;
