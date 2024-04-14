@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import Button from "@/components/button";
 import Card from "@/components/card";
 
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { getProfileStatus } from "@/app/lib/actions";
 
 const NUMBER_STEP_ROUTES = [
@@ -25,6 +25,11 @@ const HomePage = async (data) => {
 		return redirect(NUMBER_STEP_ROUTES[statusObj.next_step]);
 	}
 
+	const logout = async () => {
+		"use server";
+		await signOut();
+	};
+
 	return (
 		<div className="w-full relative bg-white overflow-hidden flex flex-col items-end justify-start pt-[75px] px-0 pb-0 box-border gap-[126px] leading-[normal] tracking-[normal] mq800:gap-[63px] mq450:gap-[31px]">
 			<img
@@ -38,14 +43,18 @@ const HomePage = async (data) => {
 						FYP
 					</h3>
 					<div className="w-[69px] flex flex-col items-start justify-end pt-0 px-0 pb-[9.5px] box-border text-center text-5xl font-montserrat">
-						<Link href={authData?.user ? "/profile" : "/Login"}>
-							<div className="self-stretch flex flex-col items-start justify-start gap-[7px]">
-								<div className="cursor-pointer self-stretch relative font-medium inline-block min-w-[69px] z-[1] mq450:text-lgi">
-									{authData?.user?.name ? authData?.user?.name : "Login"}
-								</div>
-								<div className="w-[70.5px] h-[1.5px] relative box-border z-[1] border-t-[1.5px] border-solid border-white" />
+						<form
+							action={logout}
+							className="self-stretch flex flex-col items-start justify-start gap-[7px]">
+							<div className="cursor-pointer self-stretch relative font-medium inline-block min-w-[69px] z-[1] mq450:text-lgi">
+								{authData?.user?.name ? (
+									<button type="submit">Log Out</button>
+								) : (
+									<Link href={"/login"}>Login</Link>
+								)}
 							</div>
-						</Link>
+							<div className="w-[70.5px] h-[1.5px] relative box-border z-[1] border-t-[1.5px] border-solid border-white" />
+						</form>
 					</div>
 				</div>
 			</section>
@@ -54,11 +63,13 @@ const HomePage = async (data) => {
 					<div className="w-[1075px] h-60 relative rounded-3xs bg-gray hidden max-w-full" />
 					<div className="w-[893px] relative font-semibold inline-block max-w-full z-[2] mq800:text-13xl mq450:text-5xl">{`Trusted Matrimony & Matchmaking Service`}</div>
 					<div className="w-[893px] flex flex-row items-start justify-center py-0 pr-px pl-0 box-border max-w-full">
-						<Button
-							text="Get Started" // Use the text prop for the button
-							type="submit" // Set button type to submit
-							className="self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[16.5px] px-5 text-13xl text-white"
-						/>
+						<div className="w-[30%]">
+							<Link
+								href={"/register"}
+								className="text-lgi self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[16.5px] px-5 text-13xl text-white">
+								Get Started
+							</Link>
+						</div>
 					</div>
 				</div>
 			</section>
@@ -109,11 +120,13 @@ const HomePage = async (data) => {
 							Your story is waiting to happen!
 						</div>
 					</div>
-					<Button
-						text="Get Started"
-						type="submit"
-						className="self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[16.5px] px-5 text-13xl text-white"
-					/>
+					<div className="w-[20%]">
+						<Link
+							href={"/register"}
+							className="text-lgi self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[16.5px] px-5 text-13xl text-white">
+							Get Started
+						</Link>
+					</div>
 				</div>
 			</section>
 			<section className="self-stretch flex flex-row items-start justify-center py-0 pr-[26px] pl-5 box-border max-w-full text-left text-21xl text-crimson-100 font-montserrat">
@@ -128,11 +141,11 @@ const HomePage = async (data) => {
 							cater to diverse preferences and cultures, all for free.
 							<br></br>
 							<div>
-								<Button
-									text="Sign Up for Free!"
-									type="submit"
-									className="self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[13.5px] px-5 text-11xl text-white"
-								/>
+								<Link
+									href={"/register"}
+									className="text-lgi self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[16.5px] px-5 text-13xl text-white">
+									Sign Up for Free!
+								</Link>
 							</div>
 						</div>
 					</div>
