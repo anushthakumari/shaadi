@@ -25,6 +25,8 @@ const HomePage = async (data) => {
 		return redirect(NUMBER_STEP_ROUTES[statusObj.next_step]);
 	}
 
+	const getStartedLink = authData?.user?.name ? "/matchings" : "/register";
+
 	const logout = async () => {
 		"use server";
 		await signOut();
@@ -65,7 +67,7 @@ const HomePage = async (data) => {
 					<div className="w-[893px] flex flex-row items-start justify-center py-0 pr-px pl-0 box-border max-w-full">
 						<div className="w-[30%]">
 							<Link
-								href={"/register"}
+								href={getStartedLink}
 								className="text-lgi self-stretch rounded-3xs bg-crimson-100 overflow-hidden flex flex-row items-start justify-center py-[16.5px] px-5 text-13xl text-white">
 								Get Started
 							</Link>
