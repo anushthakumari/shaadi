@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 
 import pool from "@/db";
+import { auth } from "@/auth";
 
 import UserProfileCard from "@/components/UserProfileCard";
 
@@ -15,14 +16,6 @@ const matchesData = [
 			"https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D",
 	},
 	{
-		id: 2,
-		name: "Jane Smith",
-		age: 25,
-		location: "Los Angeles",
-		imageUrl:
-			"https://images.unsplash.com/photo-1497316730643-415fac54a2af?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D",
-	},
-	{
 		id: 3,
 		name: "Alice Johnson",
 		age: 30,
@@ -30,14 +23,7 @@ const matchesData = [
 		imageUrl:
 			"https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D",
 	},
-	{
-		id: 4,
-		name: "Emily Johnson",
-		age: 27,
-		location: "Miami",
-		imageUrl:
-			"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D",
-	},
+
 	{
 		id: 5,
 		name: "Michael Brown",
@@ -63,14 +49,6 @@ const matchesData = [
 			"https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHVzZXIlMjBwcm9maWxlfGVufDB8fDB8fHww",
 	},
 	{
-		id: 8,
-		name: "Olivia Taylor",
-		age: 26,
-		location: "Boston",
-		imageUrl:
-			"https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fHVzZXIlMjBwcm9maWxlfGVufDB8fDB8fHww",
-	},
-	{
 		id: 9,
 		name: "William Thomas",
 		age: 29,
@@ -90,10 +68,28 @@ const matchesData = [
 
 const fetchUsers = async () => {
 	try {
-		const q = "SELECT * FROM users";
-		const { rows } = await pool.query(q);
-		return rows;
+		const authData = await auth();
+
+		const user_id = authData.user.id;
+
+		const user_details_q = "SELECT * FROM user_profile WHERE user_id=$1";
+		const { rows } = await pool.query(user_details_q, [user_id]);
+
+		const user_details = rows[0];
+
+		const q = `SELECT * 
+FROM users 
+INNER JOIN user_profile ON user_profile.user_id = users.user_id 
+WHERE user_profile.user_id != $1 AND user_profile.gender != $2;
+`;
+		const { rows: matchedRows } = await pool.query(q, [
+			user_id,
+			user_details.gender,
+		]);
+
+		return matchedRows;
 	} catch (error) {
+		console.log(error);
 		return matchesData;
 	}
 };
